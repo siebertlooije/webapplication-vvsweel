@@ -6,23 +6,22 @@ var userSignIn = window.UserSignIn || {};
     //Check the login of the user
     //check_user_login();
 
-    $(function onDocReady() {
-        $('#playerOfTheWeekForm').submit(handlePlayerSubmit);
-    });
 
-    function handlePlayerSubmit()
+    function handlePlayerSubmit(event)
     {
+        console.log('komt hier!');
         //Check if there is one selected.
         var checkbox_length = $('.player:checkbox:checked').length;
-        console.log(checkbox_length);
+        event.preventDefault();
+
         if(checkbox_length > 0 && checkbox_length < 4) {
             var boxes = $('.player:checkbox:checked');
+            var data =[];
             boxes.each(function () {
-                console.log($(this).val())
+                data.push($(this).val())
             });
 
-            var data ={};
-            var url = "";
+            var url = _config.api.invokeUrl;
             $.post(url, data, function(){
                 console.log("Succeed")
             }).done(function(){
@@ -36,6 +35,11 @@ var userSignIn = window.UserSignIn || {};
             console.log("checkbox is zero or more then 4 :", checkbox_length)
         }
     }
+
+    $(function onDocReady() {
+        console.log('print hier!');
+        $('#playerOfTheWeekForm').submit(handlePlayerSubmit);
+    });
 
     function check_user_login(){
         if (typeof userSignIn.authToken === 'undefined')
