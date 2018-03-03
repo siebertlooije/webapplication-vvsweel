@@ -132,7 +132,6 @@ var UserSignIn = window.UserSignIn || {};
         event.preventDefault();
 
         var cognitoUser = createCognitoUser(email);
-
         cognitoUser.forgotPassword({
             onSuccess: function (result) {
                 console.log('call result: ' + result);

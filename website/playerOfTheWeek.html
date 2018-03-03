@@ -31,10 +31,10 @@
     <h1> Spelers van de week </h1>
     <center>
         <form id="playerOfTheWeekForm">
-            <input type="checkbox" class="player" value="Player1">Piet <br/>
-            <input type="checkbox" class="player" value="Player2">Henk<br/>
-            <input type="checkbox" Class="player" value="Player3">Foo<br/>
-            <input type="checkbox" class="player" value="Player4">Bar
+            <label for="player1"><input type="checkbox" class="player" id="player1" value="Player1">Piet <br/></label>
+            <label for="player2"><input type="checkbox" class="player" id="player2" value="Player2">Henk<br/></label>
+            <label for="player3"><input type="checkbox" Class="player" id="player3" value="Player3">Foo<br/></label>
+            <label for="player4"><input type="checkbox" class="player" id="player4" value="Player4">Bar</label>
             <input type="submit" value="Submit">
         </form>
     </center>
@@ -54,6 +54,9 @@
   <script src="js/main.js"></script>
  <script src="js/config.js"></script>
  <script src="js/playerOfTheWeek.js"></script>
+
+    <script src="js/vendor/aws-cognito-sdk.min.js"></script>
+    <script src="js/vendor/amazon-cognito-identity.min.js"></script>
 <!-- <script src="js/index.js"></script> -->
 
 </body>
