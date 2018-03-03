@@ -49,13 +49,17 @@ var UserSignIn = window.UserSignIn || {};
      * Cognito User Pool functions
      */
 
+    function toUsername(email) {
+        return email.replace('@', '-at-');
+    }
+
     function register(email, password, onSuccess, onFailure) {
         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute({
             Name: 'email',
             Value: email
         });
 
-        userPool.signUp(email, password, [attributeEmail], null,
+        userPool.signUp(toUsername(email), password, [attributeEmail], null,
             function signUpCallback(err, result) {
                 if (!err) {
                     onSuccess(result);
@@ -68,7 +72,7 @@ var UserSignIn = window.UserSignIn || {};
 
     function signin(email, password, onSuccess, onFailure) {
         var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-            Username: email,
+            Username: toUsername(email),
             Password: password
         });
 
@@ -93,7 +97,7 @@ var UserSignIn = window.UserSignIn || {};
 
     function createCognitoUser(email) {
         return new AmazonCognitoIdentity.CognitoUser({
-            Username: email,
+            Username: toUsername(email),
             Pool: userPool
         });
     }
