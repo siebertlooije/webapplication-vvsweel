@@ -1,7 +1,7 @@
 var UserSignIn = window.UserSignIn || {};
 
 (function scopeWrapper($) {
-    var signinUrl = '/signin.html';
+    var signinUrl = '/website/signin.html';
 
     var poolData = {
         UserPoolId: _config.cognito.userPoolId,
@@ -49,13 +49,13 @@ var UserSignIn = window.UserSignIn || {};
      * Cognito User Pool functions
      */
 
-    function register(phonenumber, password, onSuccess, onFailure) {
-        var attributePhoneNumber = new AmazonCognitoIdentity.CognitoUserAttribute({
-            Name: 'phone_number',
-            Value: phonenumber
+    function register(email, password, onSuccess, onFailure) {
+        var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute({
+            Name: 'email',
+            Value: email
         });
 
-        userPool.signUp(phonenumber, password, [attributePhoneNumber], null,
+        userPool.signUp(email, password, [attributeEmail], null,
             function signUpCallback(err, result) {
                 if (!err) {
                     onSuccess(result);
@@ -66,13 +66,13 @@ var UserSignIn = window.UserSignIn || {};
         );
     }
 
-    function signin(phonenumber, password, onSuccess, onFailure) {
+    function signin(email, password, onSuccess, onFailure) {
         var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-            Username: phonenumber,
+            Username: email,
             Password: password
         });
 
-        var cognitoUser = createCognitoUser(phonenumber);
+        var cognitoUser = createCognitoUser(email);
         cognitoUser.authenticateUser(authenticationDetails, {
             onSuccess: onSuccess,
             onFailure: onFailure
@@ -81,8 +81,8 @@ var UserSignIn = window.UserSignIn || {};
 
 
 
-    function verify(phonenumber, code, onSuccess, onFailure) {
-        createCognitoUser(phonenumber).confirmRegistration(code, true, function confirmCallback(err, result) {
+    function verify(email, code, onSuccess, onFailure) {
+        createCognitoUser(email).confirmRegistration(code, true, function confirmCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
@@ -91,9 +91,9 @@ var UserSignIn = window.UserSignIn || {};
         });
     }
 
-    function createCognitoUser(phonenumber) {
+    function createCognitoUser(email) {
         return new AmazonCognitoIdentity.CognitoUser({
-            Username: phonenumber,
+            Username: email,
             Pool: userPool
         });
     }
@@ -110,10 +110,10 @@ var UserSignIn = window.UserSignIn || {};
     });
 
     function handleSignin(event) {
-        var phone = $('#phoneInputSignin').val();
+        var email = $('#emailInputSignin').val();
         var password = $('#passwordInputSignin').val();
         event.preventDefault();
-        signin(phone, password,
+        signin(email, password,
             function signinSuccess() {
                 console.log('Successfully Logged In');
                 //Maybe change this location later
@@ -125,18 +125,12 @@ var UserSignIn = window.UserSignIn || {};
         );
     }
 
-    function formatPhoneNumber(phonenumber){
-        if(phonenumber.startsWith("0"))
-            return phonenumber.replace("0","+31")
-
-        return phonenumber
-    }
 
     function handleResetPassword(event) {
-        var phonenumber = formatPhoneNumber($('#phoneInputReset').val());
+        var email = $('#emailInputReset').val();
         event.preventDefault();
 
-        var cognitoUser = createCognitoUser(phonenumber);
+        var cognitoUser = createCognitoUser(email);
 
         cognitoUser.forgotPassword({
             onSuccess: function (result) {
@@ -153,12 +147,12 @@ var UserSignIn = window.UserSignIn || {};
         });
     }
     function handleRegister(event) {
-        var phonenumber = formatPhoneNumber($('#phoneInputRegister').val());
+        var email = $('#emailInputRegister').val();
         var password = $('#passwordInputRegister').val();
         var password2 = $('#password2InputRegister').val();
 
         var onSuccess = function registerSuccess() {
-            var confirmation = ('Registration successful. Please check your phone for your verification code.');
+            var confirmation = ('Registration successful. Please check your email for your verification code.');
             if (confirmation) {
                 window.location.href = 'verify.html';
             }
@@ -169,17 +163,17 @@ var UserSignIn = window.UserSignIn || {};
         event.preventDefault();
 
         if (password === password2) {
-            register(phonenumber, password, onSuccess, onFailure);
+            register(email, password, onSuccess, onFailure);
         } else {
             alert('Passwords do not match');
         }
     }
 
     function handleVerify(event) {
-        var phonenumber = formatPhoneNumber($('#phoneInputVerify').val());
+        var email = $('#emailInputVerify').val();
         var code = $('#codeInputVerify').val();
         event.preventDefault();
-        verify(phonenumber, code,
+        verify(email, code,
             function verifySuccess(result) {
                 console.log('call result: ' + result);
                 console.log('Successfully verified');
