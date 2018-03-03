@@ -72,7 +72,7 @@ var UserSignIn = window.UserSignIn || {};
             Username: email,
             Password: password
         });
-
+        window.user_email = email;
         var cognitoUser = createCognitoUser(email);
         cognitoUser.authenticateUser(authenticationDetails, {
             onSuccess: onSuccess,

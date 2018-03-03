@@ -11,32 +11,6 @@ var userSignIn = window.UserSignIn || {};
         $('#playerOfTheWeekForm').submit(handlePlayerSubmit);
     });
 
-    function get_email(){
-
-        var poolData = {
-            UserPoolId: _config.cognito.userPoolId,
-            ClientId: _config.cognito.userPoolClientId
-        };
-
-        var userPool;
-        userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-        var cognitoUser = userPool.getCurrentUser();
-        if (typeof cognitoUser === 'undefined' || cognitoUser === null)
-            return;
-
-        console.log(cognitoUser);
-        cognitoUser.getUserAttributes(function(err, result) {
-        if (err) {
-            alert(err);
-            return;
-        }
-        for (var i = 0; i < result.length; i++) {
-            if(result[i].getName() === "email")
-                return result[i].getValue()
-
-        }
-    });
-    }
 
     function check_players(dict_){
         var list_ = ["player1","player2","player3"]
@@ -58,11 +32,10 @@ var userSignIn = window.UserSignIn || {};
         if(checkbox_length > 0 && checkbox_length < 4) {
 
             var dict = {};
-            var email = get_email();
             if (typeof cognitoUser === 'undefined')
-                email = "unknown";
+                window.global_email = "unknown";
 
-            dict["userId"] = email;
+            dict["userId"] = window.global_email;
             var counter = 1;
             $('.player:checkbox:checked').each(function () {
                  dict["player"+counter] = $($(this).prop("labels")).text();
@@ -74,9 +47,10 @@ var userSignIn = window.UserSignIn || {};
             $.post(url, JSON.stringify(dict), function(){
                 console.log("Succeed")
             }).done(function(){
+                alert("Met success gestemt");
                 console.log("Done")
             }).fail(function(xhr, status, error){
-                console.log("fail " + status + " " + error);
+                alert("Het stemmen is mislukt. Probeer het nog eens.")
             })
         }
         else
