@@ -49,9 +49,6 @@ var UserSignIn = window.UserSignIn || {};
      * Cognito User Pool functions
      */
 
-    function toUsername(email) {
-        return email.replace('@', '-at-');
-    }
 
     function register(email, password, onSuccess, onFailure) {
         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute({
@@ -59,7 +56,7 @@ var UserSignIn = window.UserSignIn || {};
             Value: email
         });
 
-        userPool.signUp(toUsername(email), password, [attributeEmail], null,
+        userPool.signUp(email, password, [attributeEmail], null,
             function signUpCallback(err, result) {
                 if (!err) {
                     onSuccess(result);
@@ -72,7 +69,7 @@ var UserSignIn = window.UserSignIn || {};
 
     function signin(email, password, onSuccess, onFailure) {
         var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-            Username: toUsername(email),
+            Username: email,
             Password: password
         });
 
@@ -97,7 +94,7 @@ var UserSignIn = window.UserSignIn || {};
 
     function createCognitoUser(email) {
         return new AmazonCognitoIdentity.CognitoUser({
-            Username: toUsername(email),
+            Username: email,
             Pool: userPool
         });
     }
@@ -154,7 +151,7 @@ var UserSignIn = window.UserSignIn || {};
         var email = $('#emailInputRegister').val();
         var password = $('#passwordInputRegister').val();
         var password2 = $('#password2InputRegister').val();
-
+        console.log(email);
         var onSuccess = function registerSuccess() {
             var confirmation = ('Registration successful. Please check your email for your verification code.');
             if (confirmation) {
