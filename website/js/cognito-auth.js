@@ -125,9 +125,15 @@ var UserSignIn = window.UserSignIn || {};
         );
     }
 
+    function formatPhoneNumber(phonenumber){
+        if(phonenumber.startsWith("0"))
+            return phonenumber.replace("0","+31")
+
+        return phonenumber
+    }
+
     function handleResetPassword(event) {
-        var phonenumber = $('#phoneInputReset').val();
-        console.log(phonenumber)
+        var phonenumber = formatPhoneNumber($('#phoneInputReset').val());
         event.preventDefault();
 
         var cognitoUser = createCognitoUser(phonenumber);
@@ -147,7 +153,7 @@ var UserSignIn = window.UserSignIn || {};
         });
     }
     function handleRegister(event) {
-        var phonenumber = $('#phoneInputRegister').val();
+        var phonenumber = formatPhoneNumber($('#phoneInputRegister').val());
         var password = $('#passwordInputRegister').val();
         var password2 = $('#password2InputRegister').val();
 
@@ -170,7 +176,7 @@ var UserSignIn = window.UserSignIn || {};
     }
 
     function handleVerify(event) {
-        var phonenumber = $('#phoneInputVerify').val();
+        var phonenumber = formatPhoneNumber($('#phoneInputVerify').val());
         var code = $('#codeInputVerify').val();
         event.preventDefault();
         verify(phonenumber, code,
